@@ -1,0 +1,8 @@
+/build
+build
+app/build
+.github
+.gradle
+.idea
+local.properties
+.kotlin
