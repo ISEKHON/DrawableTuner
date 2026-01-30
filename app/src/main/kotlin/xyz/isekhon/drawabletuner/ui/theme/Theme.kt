@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package xyz.isekhon.drawabletuner.ui.theme
 
 import android.app.Activity
