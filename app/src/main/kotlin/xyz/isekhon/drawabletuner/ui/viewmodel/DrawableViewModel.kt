@@ -63,9 +63,9 @@ class DrawableViewModel(application: Application) : AndroidViewModel(application
                 
                 property?.let {
                     when (value) {
-                        is Int -> (it as? KMutableProperty1<DrawablePropertiesInRoom, Int>)?.set(newProps, value)
-                        is Float -> (it as? KMutableProperty1<DrawablePropertiesInRoom, Float>)?.set(newProps, value)
-                        is Boolean -> (it as? KMutableProperty1<DrawablePropertiesInRoom, Boolean>)?.set(newProps, value)
+                        is Int -> (it as? KMutableProperty1<*, *>)?.set(newProps, value)
+                        is Float -> (it as? KMutableProperty1<*, *>)?.set(newProps, value)
+                        is Boolean -> (it as? KMutableProperty1<*, *>)?.set(newProps, value)
                     }
                 }
             }
