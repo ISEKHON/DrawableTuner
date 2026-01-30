@@ -1,21 +1,35 @@
 [versions]
 agp = "9.0.0"
 animationGraphics = "1.10.2"
+bom = "0.23.4-467c137-SNAPSHOT"
+desugar_jdk_libs = "2.1.5"
+dom4j = "2.2.0"
 foundation = "1.10.2"
 gson = "2.13.2"
 kotlin = "2.3.0"
 coreKtx = "1.17.0"
+kotlinReflect = "2.3.0"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.12.3"
 composeNavigation = "2.9.7"
+lifecycleViewmodelCompose = "2.10.0"
 material3 = "1.4.0"
+materialIconsExtended = "1.7.8"
 serialization = "1.10.0"
 composeBom = "2026.01.01"
 
 [libraries]
 androidx-animation-graphics = { module = "androidx.compose.animation:animation-graphics", version.ref = "animationGraphics" }
+androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "materialIconsExtended" }
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+sora-bom = { module = "io.github.Rosemoe.sora-editor:bom", version.ref = "bom" }
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+dom4j = { module = "org.dom4j:dom4j", version.ref = "dom4j" }
+editor = { module = "io.github.Rosemoe.sora-editor:editor" }
+language-textmate = { module = "io.github.Rosemoe.sora-editor:language-textmate" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -24,6 +38,7 @@ androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlinReflect" }
 material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNavigation" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }

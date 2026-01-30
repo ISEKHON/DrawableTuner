@@ -39,28 +39,22 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
     
-    implementation(platform("io.github.Rosemoe.sora-editor:bom:0.23.4-467c137-SNAPSHOT"))
-    implementation("io.github.Rosemoe.sora-editor:editor")
-    implementation("io.github.Rosemoe.sora-editor:language-textmate")
+    implementation(platform(libs.sora.bom))
+    implementation(libs.editor)
+    implementation(libs.language.textmate)
 
     // Kotlin reflection
-    implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.0")
-
-    // DataStore for modern data persistence
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
-    implementation("androidx.datastore:datastore:1.1.1")
+    implementation(libs.kotlin.reflect)
 
     // XML processing
-    implementation("org.dom4j:dom4j:2.1.1")
+    implementation(libs.dom4j)
 
     // Jetpack Compose
     implementation(libs.androidx.foundation)
-    implementation(libs.androidx.animation.graphics)
     implementation(libs.androidx.core.ktx)
     implementation(libs.gson)
-    implementation("androidx.appcompat:appcompat:1.7.0")
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -71,8 +65,8 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization)
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
-    implementation("androidx.compose.material:material-icons-core:1.7.6")
-    implementation("androidx.compose.material:material-icons-extended:1.7.6")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.material.icons.extended)
 }
 
