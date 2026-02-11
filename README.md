@@ -2,6 +2,24 @@
 
 A modern Android app for creating and designing gradient drawables with a beautiful Material 3 UI. Create complex shapes, gradients, and export them as XML code ready to use in your Android projects.
 
+## Screenshots
+
+<p align="center">
+  <img src="preview/screenshot_1.jpg" width="250" alt="Main Screen" />
+  <img src="preview/screenshot_2.jpg" width="250" alt="Gradient Controls" />
+  <img src="preview/screenshot_3.jpg" width="250" alt="Color Picker" />
+</p>
+
+<p align="center">
+  <img src="preview/screenshot_4.jpg" width="250" alt="Stroke Settings" />
+  <img src="preview/screenshot_5.jpg" width="250" alt="XML Code View" />
+  <img src="preview/screenshot_6.jpg" width="250" alt="Spec Chooser" />
+</p>
+
+<p align="center">
+  <img src="preview/screenshot_7.jpg" width="250" alt="Shape Preview" />
+</p>
+
 ## Features
 
 ### 🎨 Shape Design
@@ -87,24 +105,6 @@ git clone https://github.com/ISEKHON/DrawableTuner.git
 6. **Add Stroke**: Configure border width, color, and dash patterns
 7. **Preview**: Watch your drawable update in real-time
 8. **Export**: View and copy the generated XML code
-
-## Screenshots
-
-<p align="center">
-  <img src="preview/screenshot_1.jpg" width="250" alt="Main Screen" />
-  <img src="preview/screenshot_2.jpg" width="250" alt="Gradient Controls" />
-  <img src="preview/screenshot_3.jpg" width="250" alt="Color Picker" />
-</p>
-
-<p align="center">
-  <img src="preview/screenshot_4.jpg" width="250" alt="Stroke Settings" />
-  <img src="preview/screenshot_5.jpg" width="250" alt="XML Code View" />
-  <img src="preview/screenshot_6.jpg" width="250" alt="Spec Chooser" />
-</p>
-
-<p align="center">
-  <img src="preview/screenshot_7.jpg" width="250" alt="Shape Preview" />
-</p>
 
 ## Contributing
 
