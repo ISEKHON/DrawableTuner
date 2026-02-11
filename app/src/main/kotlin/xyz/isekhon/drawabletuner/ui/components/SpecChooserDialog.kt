@@ -1,15 +1,27 @@
 package xyz.isekhon.drawabletuner.ui.components
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import xyz.isekhon.drawabletuner.data.model.DrawableSpec
+import xyz.isekhon.drawabletuner.utils.DrawableBuilder
+import xyz.isekhon.drawabletuner.utils.PropertiesExchange
 
 @Composable
 fun SpecChooserDialog(
@@ -17,6 +29,8 @@ fun SpecChooserDialog(
     onDismiss: () -> Unit,
     onSelect: (DrawableSpec) -> Unit
 ) {
+    val context = LocalContext.current
+    
     Dialog(onDismissRequest = onDismiss) {
         Card {
             Column(
@@ -37,20 +51,62 @@ fun SpecChooserDialog(
                         modifier = Modifier.padding(16.dp)
                     )
                 } else {
-                    LazyColumn(
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(specs) { spec ->
+                            val drawable = remember(spec) {
+                                DrawableBuilder(context.resources.displayMetrics.density)
+                                    .batch(PropertiesExchange.fromRoom(spec.properties))
+                                    .build()
+                            }
+                            
                             Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable { onSelect(spec) }
                             ) {
-                                Text(
-                                    spec.name,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(16.dp)
-                                )
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(12.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    // Preview box with checkerboard background
+                                    Surface(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .aspectRatio(1f),
+                                        shape = MaterialTheme.shapes.small,
+                                        tonalElevation = 2.dp
+                                    ) {
+                                        Box {
+                                            // Checkerboard background
+                                            Canvas(modifier = Modifier.fillMaxSize()) {
+                                                drawMiniCheckerboard()
+                                            }
+                                            
+                                            // Drawable preview
+                                            Canvas(modifier = Modifier.fillMaxSize()) {
+                                                val canvas = drawContext.canvas.nativeCanvas
+                                                val sizePx = size.width.toInt()
+                                                drawable.setBounds(0, 0, sizePx, sizePx)
+                                                drawable.draw(canvas)
+                                            }
+                                        }
+                                    }
+                                    
+                                    // Spec name
+                                    Text(
+                                        spec.name,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        maxLines = 2,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
                             }
                         }
                     }
@@ -68,5 +124,27 @@ fun SpecChooserDialog(
                 }
             }
         }
+    }
+}
+
+private fun DrawScope.drawMiniCheckerboard() {
+    val checkSize = 8.dp.toPx()
+    val lightColor = Color.White
+    val darkColor = Color(0xFFE0E0E0)
+    
+    var y = 0f
+    while (y < size.height) {
+        var x = 0f
+        var useDark = (y / checkSize).toInt() % 2 == 0
+        while (x < size.width) {
+            drawRect(
+                color = if (useDark) darkColor else lightColor,
+                topLeft = Offset(x, y),
+                size = Size(checkSize, checkSize)
+            )
+            x += checkSize
+            useDark = !useDark
+        }
+        y += checkSize
     }
 }
