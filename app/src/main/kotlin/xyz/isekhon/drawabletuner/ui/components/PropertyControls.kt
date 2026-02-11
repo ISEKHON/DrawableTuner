@@ -56,11 +56,12 @@ fun PropertyControls(
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
+                val maxCornerRadius = kotlin.math.min(properties.width, properties.height) / 2f
                 SliderControl(
                     label = "Corner Radius",
                     value = properties.getCornerRadius().toFloat(),
                     onValueChange = { onPropertyChange("cornerRadius", it.toInt()) },
-                    valueRange = 0f..200f
+                    valueRange = 0f..maxCornerRadius
                 )
             }
         }
