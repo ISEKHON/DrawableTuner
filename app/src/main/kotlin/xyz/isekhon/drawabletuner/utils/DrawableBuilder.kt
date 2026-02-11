@@ -113,26 +113,19 @@ class DrawableBuilder(private val density: Float = Resources.getSystem().display
     fun build(): Drawable {
         val drawable = GradientDrawable()
         
-        // Set shape
+        // Set shape first
         drawable.shape = shape
         
-        // Ring-specific properties
+        // Ring-specific properties - must be set before other properties
         if (shape == GradientDrawable.RING) {
-            if (innerRadius != -1) {
-                drawable.setSize(dpToPx(width), dpToPx(height))
-            } else {
-                drawable.innerRadiusRatio = innerRadiusRatio
-            }
-            
-            if (thickness != -1) {
-                drawable.setSize(dpToPx(width), dpToPx(height))
-            } else {
-                drawable.thicknessRatio = thicknessRatio
-            }
+            drawable.useLevel = false
+            drawable.innerRadiusRatio = innerRadiusRatio
+            drawable.thicknessRatio = thicknessRatio
         }
         
-        // Corner radii - convert dp to pixels
-        if (topLeftRadius > 0 || topRightRadius > 0 || bottomLeftRadius > 0 || bottomRightRadius > 0) {
+        // Corner radii - only for rectangles
+        if (shape == GradientDrawable.RECTANGLE && 
+            (topLeftRadius > 0 || topRightRadius > 0 || bottomLeftRadius > 0 || bottomRightRadius > 0)) {
             drawable.cornerRadii = floatArrayOf(
                 dpToPx(topLeftRadius).toFloat(), dpToPx(topLeftRadius).toFloat(),
                 dpToPx(topRightRadius).toFloat(), dpToPx(topRightRadius).toFloat(),
@@ -141,8 +134,8 @@ class DrawableBuilder(private val density: Float = Resources.getSystem().display
             )
         }
         
-        // Gradient or solid color
-        if (useGradient) {
+        // Gradient or solid color (LINE shape doesn't support fills, only strokes)
+        if (useGradient && shape != GradientDrawable.LINE) {
             val colors = if (centerColor != null) {
                 intArrayOf(startColor, centerColor!!, endColor)
             } else {
@@ -160,6 +153,13 @@ class DrawableBuilder(private val density: Float = Resources.getSystem().display
             gradientDrawable.shape = shape
             gradientDrawable.gradientType = gradientType
             
+            // Ring-specific properties for gradient drawable
+            if (shape == GradientDrawable.RING) {
+                gradientDrawable.useLevel = false
+                gradientDrawable.innerRadiusRatio = innerRadiusRatio
+                gradientDrawable.thicknessRatio = thicknessRatio
+            }
+            
             if (gradientType == GradientDrawable.LINEAR_GRADIENT) {
                 gradientDrawable.orientation = getOrientation(angle)
             }
@@ -170,8 +170,9 @@ class DrawableBuilder(private val density: Float = Resources.getSystem().display
             
             gradientDrawable.setGradientCenter(centerX, centerY)
             
-            // Copy properties to gradient drawable
-            if (topLeftRadius > 0 || topRightRadius > 0 || bottomLeftRadius > 0 || bottomRightRadius > 0) {
+            // Copy corner radii to gradient drawable (only for rectangles)
+            if (shape == GradientDrawable.RECTANGLE && 
+                (topLeftRadius > 0 || topRightRadius > 0 || bottomLeftRadius > 0 || bottomRightRadius > 0)) {
                 gradientDrawable.cornerRadii = floatArrayOf(
                     dpToPx(topLeftRadius).toFloat(), dpToPx(topLeftRadius).toFloat(),
                     dpToPx(topRightRadius).toFloat(), dpToPx(topRightRadius).toFloat(),
@@ -191,16 +192,24 @@ class DrawableBuilder(private val density: Float = Resources.getSystem().display
             
             gradientDrawable.setSize(dpToPx(width), dpToPx(height))
             return gradientDrawable
-        } else {
+        } else if (shape != GradientDrawable.LINE) {
+            // Set solid color for all shapes except LINE
             drawable.setColor(solidColor)
         }
         
-        // Set stroke - convert dp to pixels
-        if (strokeWidth > 0) {
-            if (dashWidth > 0 && dashGap > 0) {
-                drawable.setStroke(dpToPx(strokeWidth), strokeColor, dpToPx(dashWidth).toFloat(), dpToPx(dashGap).toFloat())
-            } else {
-                drawable.setStroke(dpToPx(strokeWidth), strokeColor)
+        // For LINE shape, ensure there's always a stroke (lines are only visible with stroke)
+        if (shape == GradientDrawable.LINE) {
+            val lineStrokeWidth = if (strokeWidth > 0) strokeWidth else 5 // Default to 5dp if no stroke
+            val lineStrokeColor = if (strokeWidth > 0) strokeColor else solidColor
+            drawable.setStroke(dpToPx(lineStrokeWidth), lineStrokeColor)
+        } else {
+            // Set stroke for other shapes if specified
+            if (strokeWidth > 0) {
+                if (dashWidth > 0 && dashGap > 0) {
+                    drawable.setStroke(dpToPx(strokeWidth), strokeColor, dpToPx(dashWidth).toFloat(), dpToPx(dashGap).toFloat())
+                } else {
+                    drawable.setStroke(dpToPx(strokeWidth), strokeColor)
+                }
             }
         }
         

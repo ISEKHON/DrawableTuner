@@ -213,6 +213,9 @@ fun PropertyControls(
                 }
             }
         }
+        
+        // Add spacer to ensure content is always scrollable
+        Spacer(modifier = Modifier.height(200.dp))
     }
 }
 
