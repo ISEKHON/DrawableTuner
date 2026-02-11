@@ -3,6 +3,8 @@ package xyz.isekhon.drawabletuner.utils
 import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
+import androidx.annotation.RequiresApi
 
 /**
  * Builder class for creating GradientDrawable instances
@@ -110,6 +112,7 @@ class DrawableBuilder(private val density: Float = Resources.getSystem().display
         dashGap(properties.dashGap)
     }
     
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun build(): Drawable {
         val drawable = GradientDrawable()
         

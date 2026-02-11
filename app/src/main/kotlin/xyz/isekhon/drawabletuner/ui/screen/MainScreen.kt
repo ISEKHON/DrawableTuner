@@ -59,6 +59,12 @@ fun MainScreen(
     
     val scrollState = rememberScrollState()
     
+    // Apply dynamic Material 3 colors on first load
+    val colorScheme = MaterialTheme.colorScheme
+    LaunchedEffect(Unit) {
+        viewModel.applyDynamicColors(colorScheme)
+    }
+    
     // Use derivedStateOf to minimize recompositions
     val isCollapsed by remember { derivedStateOf { scrollState.value > 50 } }
     
@@ -124,7 +130,7 @@ fun MainScreen(
                                     ) 
                                 },
                                 onClick = {
-                                    viewModel.createNewSpec()
+                                    viewModel.createNewSpec(colorScheme)
                                     showMoreMenu = false
                                 },
                                 leadingIcon = { 

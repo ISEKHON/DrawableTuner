@@ -2,6 +2,7 @@ package xyz.isekhon.drawabletuner.ui.viewmodel
 
 import android.app.Application
 import android.graphics.drawable.Drawable
+import androidx.compose.material3.ColorScheme
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,10 +40,20 @@ class DrawableViewModel(application: Application) : AndroidViewModel(application
     val savedSpecs: StateFlow<List<DrawableSpec>> = _savedSpecs.asStateFlow()
     
     private var updateJob: Job? = null
+    private var isInitialLoad = true
     
     init {
         updateDrawable()
         loadSavedSpecs()
+    }
+    
+    // Apply dynamic Material 3 colors to initial drawable
+    fun applyDynamicColors(colorScheme: ColorScheme) {
+        if (isInitialLoad && _currentSpec.value.id == 0) {
+            _properties.value = DrawablePropertiesFactory.createDefaultWithDynamicColors(colorScheme)
+            updateDrawable()
+            isInitialLoad = false
+        }
     }
     
     private fun updateDrawable() {
@@ -96,10 +107,14 @@ class DrawableViewModel(application: Application) : AndroidViewModel(application
         _isEdited.value = false
     }
     
-    fun createNewSpec() {
+    fun createNewSpec(colorScheme: ColorScheme? = null) {
         val newSpec = DrawableSpec.createTemp()
         _currentSpec.value = newSpec
-        _properties.value = newSpec.properties.copy()
+        _properties.value = if (colorScheme != null) {
+            DrawablePropertiesFactory.createDefaultWithDynamicColors(colorScheme)
+        } else {
+            newSpec.properties.copy()
+        }
         updateDrawable()
         _isEdited.value = true
     }

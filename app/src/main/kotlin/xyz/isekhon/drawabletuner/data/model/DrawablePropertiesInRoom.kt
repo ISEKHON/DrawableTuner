@@ -32,9 +32,9 @@ data class DrawablePropertiesInRoom(
     var angle: Int = 0,
     var centerX: Float = 0.5f,
     var centerY: Float = 0.5f,
-    var startColor: Int = 0xFF2DCFCA.toInt(),
+    var startColor: Int = 0xFF6750A4.toInt(), // Material 3 Primary
     var centerColor: Int = Color.TRANSPARENT,
-    var endColor: Int = 0x7FFFFFFF,
+    var endColor: Int = 0x80D0BCFF.toInt(), // Material 3 Primary Container with alpha
     
     var gradientRadiusType: Int = DrawableProperties.RADIUS_TYPE_PIXELS,
     var gradientRadius: Float = 200f,
@@ -44,11 +44,11 @@ data class DrawablePropertiesInRoom(
     var height: Int = 150,
     
     // Solid color
-    var solidColor: Int = 0xFF2DCFCA.toInt(),
+    var solidColor: Int = 0xFF6750A4.toInt(), // Material 3 Primary
     
     // Stroke properties
     var strokeWidth: Int = 0,
-    var strokeColor: Int = 0xFF24A5A1.toInt(),
+    var strokeColor: Int = 0xFF625B71.toInt(), // Material 3 Outline
     var dashWidth: Int = 0,
     var dashGap: Int = 0
 ) : Parcelable {
