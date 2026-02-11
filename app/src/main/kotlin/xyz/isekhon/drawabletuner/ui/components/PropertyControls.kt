@@ -252,7 +252,7 @@ fun PropertySection(
                 )
             ),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+            //containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = cardElevation)
     ) {
