@@ -506,6 +506,20 @@ fun ColorPickerControl(
         label = "buttonScale"
     )
     
+    // Calculate contrasting text color based on background luminance
+    val textColor = remember(color) {
+        val red = ((color shr 16) and 0xFF) / 255f
+        val green = ((color shr 8) and 0xFF) / 255f
+        val blue = (color and 0xFF) / 255f
+        
+        // Calculate relative luminance (WCAG formula)
+        val luminance = 0.2126f * red + 0.7152f * green + 0.0722f * blue
+        
+        // Use white text for dark backgrounds, black for light backgrounds
+        if (luminance > 0.5f) androidx.compose.ui.graphics.Color.Black 
+        else androidx.compose.ui.graphics.Color.White
+    }
+    
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -521,7 +535,8 @@ fun ColorPickerControl(
         FilledTonalButton(
             onClick = { showColorPicker = true },
             colors = ButtonDefaults.filledTonalButtonColors(
-                containerColor = androidx.compose.ui.graphics.Color(color)
+                containerColor = androidx.compose.ui.graphics.Color(color),
+                contentColor = textColor
             ),
             modifier = Modifier.scale(buttonScale),
             elevation = ButtonDefaults.buttonElevation(
