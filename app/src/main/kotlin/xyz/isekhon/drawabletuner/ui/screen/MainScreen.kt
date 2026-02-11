@@ -57,7 +57,9 @@ fun MainScreen(
     var showMoreMenu by remember { mutableStateOf(false) }
     
     val scrollState = rememberScrollState()
-    val isCollapsed = scrollState.value > 50
+    
+    // Use derivedStateOf to minimize recompositions
+    val isCollapsed by remember { derivedStateOf { scrollState.value > 50 } }
     
     val previewHeight by animateDpAsState(
         targetValue = if (isCollapsed) 120.dp else 280.dp,

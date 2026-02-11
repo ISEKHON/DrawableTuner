@@ -19,6 +19,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,27 +46,32 @@ fun ColorPickerDialog(
     onDismiss: () -> Unit,
     onColorSelected: (Int) -> Unit
 ) {
-    var selectedColor by remember { mutableIntStateOf(currentColor) }
     var showAdvanced by remember { mutableStateOf(false) }
+    
+    // Extract initial ARGB and HSV
+    val initialAlpha = ((currentColor shr 24) and 0xFF) / 255f
+    val initialRed = ((currentColor shr 16) and 0xFF) / 255f
+    val initialGreen = ((currentColor shr 8) and 0xFF) / 255f
+    val initialBlue = (currentColor and 0xFF) / 255f
+    val initialHsv = rgbToHsv(initialRed, initialGreen, initialBlue)
+    
+    var hue by remember { mutableFloatStateOf(initialHsv[0]) }
+    var saturation by remember { mutableFloatStateOf(initialHsv[1]) }
+    var value by remember { mutableFloatStateOf(initialHsv[2]) }
+    var alphaValue by remember { mutableFloatStateOf(initialAlpha) }
+    
+    // Compute selectedColor instantly from HSV for immediate preview updates
+    val selectedColor by remember {
+        derivedStateOf {
+            val rgb = hsvToRgb(hue, saturation, value)
+            argbToInt(alphaValue, rgb[0], rgb[1], rgb[2])
+        }
+    }
+    
     var hexInput by remember { mutableStateOf(String.format("%08X", currentColor)) }
     
-    // Extract ARGB components
-    val alpha = remember(selectedColor) { ((selectedColor shr 24) and 0xFF) / 255f }
-    val red = remember(selectedColor) { ((selectedColor shr 16) and 0xFF) / 255f }
-    val green = remember(selectedColor) { ((selectedColor shr 8) and 0xFF) / 255f }
-    val blue = remember(selectedColor) { (selectedColor and 0xFF) / 255f }
-    
-    // Convert to HSV
-    val hsv = remember(red, green, blue) { rgbToHsv(red, green, blue) }
-    var hue by remember { mutableFloatStateOf(hsv[0]) }
-    var saturation by remember { mutableFloatStateOf(hsv[1]) }
-    var value by remember { mutableFloatStateOf(hsv[2]) }
-    var alphaValue by remember { mutableFloatStateOf(alpha) }
-    
-    // Update color when HSV changes
-    LaunchedEffect(hue, saturation, value, alphaValue) {
-        val rgb = hsvToRgb(hue, saturation, value)
-        selectedColor = argbToInt(alphaValue, rgb[0], rgb[1], rgb[2])
+    // Update hex input instantly when color changes
+    LaunchedEffect(selectedColor) {
         hexInput = String.format("%08X", selectedColor)
     }
     
@@ -147,7 +153,6 @@ fun ColorPickerDialog(
                                     try {
                                         val fullHex = if (hexInput.length == 6) "FF$hexInput" else hexInput
                                         val color = fullHex.toLong(16).toInt()
-                                        selectedColor = color
                                         val a = ((color shr 24) and 0xFF) / 255f
                                         val r = ((color shr 16) and 0xFF) / 255f
                                         val g = ((color shr 8) and 0xFF) / 255f
@@ -188,8 +193,6 @@ fun ColorPickerDialog(
                     PresetColors(
                         currentColor = selectedColor,
                         onColorSelected = { color ->
-                            selectedColor = color
-                            hexInput = String.format("%08X", color)
                             val a = ((color shr 24) and 0xFF) / 255f
                             val r = ((color shr 16) and 0xFF) / 255f
                             val g = ((color shr 8) and 0xFF) / 255f
@@ -284,9 +287,6 @@ fun ColorPickerDialog(
                                     onValueChange = { r ->
                                         val g = (selectedColor shr 8) and 0xFF
                                         val b = selectedColor and 0xFF
-                                        val a = (selectedColor shr 24) and 0xFF
-                                        selectedColor = (a shl 24) or (r shl 16) or (g shl 8) or b
-                                        hexInput = String.format("%08X", selectedColor)
                                         val newHsv = rgbToHsv(r / 255f, g / 255f, b / 255f)
                                         hue = newHsv[0]
                                         saturation = newHsv[1]
@@ -300,9 +300,6 @@ fun ColorPickerDialog(
                                     onValueChange = { g ->
                                         val r = (selectedColor shr 16) and 0xFF
                                         val b = selectedColor and 0xFF
-                                        val a = (selectedColor shr 24) and 0xFF
-                                        selectedColor = (a shl 24) or (r shl 16) or (g shl 8) or b
-                                        hexInput = String.format("%08X", selectedColor)
                                         val newHsv = rgbToHsv(r / 255f, g / 255f, b / 255f)
                                         hue = newHsv[0]
                                         saturation = newHsv[1]
@@ -316,9 +313,6 @@ fun ColorPickerDialog(
                                     onValueChange = { b ->
                                         val r = (selectedColor shr 16) and 0xFF
                                         val g = (selectedColor shr 8) and 0xFF
-                                        val a = (selectedColor shr 24) and 0xFF
-                                        selectedColor = (a shl 24) or (r shl 16) or (g shl 8) or b
-                                        hexInput = String.format("%08X", selectedColor)
                                         val newHsv = rgbToHsv(r / 255f, g / 255f, b / 255f)
                                         hue = newHsv[0]
                                         saturation = newHsv[1]
@@ -331,7 +325,6 @@ fun ColorPickerDialog(
                                     value = ((selectedColor shr 24) and 0xFF),
                                     onValueChange = { a ->
                                         alphaValue = a / 255f
-                                        hexInput = String.format("%08X", selectedColor)
                                     },
                                     modifier = Modifier.weight(1f)
                                 )
@@ -366,6 +359,13 @@ fun HueSlider(
     hue: Float,
     onHueChange: (Float) -> Unit
 ) {
+    // Cache the gradient colors
+    val hueColors = remember {
+        (0..360 step 15).map { h ->
+            Color.hsv(h.toFloat(), 1f, 1f)
+        }
+    }
+    
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -382,18 +382,15 @@ fun HueSlider(
                             onHueChange(newHue)
                         },
                         onDrag = { change, _ ->
+                            change.consume()
                             val newHue = (change.position.x / size.width).coerceIn(0f, 1f) * 360f
                             onHueChange(newHue)
                         }
                     )
                 }
         ) {
-            val colors = (0..360 step 10).map { h ->
-                Color.hsv(h.toFloat(), 1f, 1f)
-            }
-            
             drawRect(
-                brush = Brush.horizontalGradient(colors),
+                brush = Brush.horizontalGradient(hueColors),
                 size = size
             )
             
@@ -422,6 +419,9 @@ fun SaturationValuePicker(
     value: Float,
     onSaturationValueChange: (Float, Float) -> Unit
 ) {
+    // Cache base color calculation
+    val baseColor = remember(hue) { Color.hsv(hue, 1f, 1f) }
+    
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -439,6 +439,7 @@ fun SaturationValuePicker(
                             onSaturationValueChange(newSaturation, newValue)
                         },
                         onDrag = { change, _ ->
+                            change.consume()
                             val newSaturation = (change.position.x / size.width).coerceIn(0f, 1f)
                             val newValue = 1f - (change.position.y / size.height).coerceIn(0f, 1f)
                             onSaturationValueChange(newSaturation, newValue)
@@ -446,9 +447,6 @@ fun SaturationValuePicker(
                     )
                 }
         ) {
-            // Draw saturation-value gradient
-            val baseColor = Color.hsv(hue, 1f, 1f)
-            
             // Horizontal gradient (saturation)
             drawRect(
                 brush = Brush.horizontalGradient(
@@ -490,6 +488,8 @@ fun AlphaSlider(
     color: Int,
     onAlphaChange: (Float) -> Unit
 ) {
+    val baseColor = remember(color) { Color(color or 0xFF000000.toInt()) }
+    
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -506,6 +506,7 @@ fun AlphaSlider(
                             onAlphaChange(newAlpha)
                         },
                         onDrag = { change, _ ->
+                            change.consume()
                             val newAlpha = (change.position.x / size.width).coerceIn(0f, 1f)
                             onAlphaChange(newAlpha)
                         }
@@ -531,7 +532,6 @@ fun AlphaSlider(
             }
             
             // Alpha gradient
-            val baseColor = Color(color or 0xFF000000.toInt())
             drawRect(
                 brush = Brush.horizontalGradient(
                     colors = listOf(Color.Transparent, baseColor)
@@ -617,7 +617,10 @@ fun PresetColors(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.height(90.dp)
     ) {
-        items(predefinedColors.size) { index ->
+        items(
+            count = predefinedColors.size,
+            key = { index -> predefinedColors[index] }
+        ) { index ->
             val color = predefinedColors[index]
             Box(
                 modifier = Modifier

@@ -227,20 +227,6 @@ fun PropertySection(
     content: @Composable ColumnScope.() -> Unit
 ) {
     var expanded by remember { mutableStateOf(initiallyExpanded) }
-    val rotationAngle by animateFloatAsState(
-        targetValue = if (expanded) 180f else 0f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        ),
-        label = "rotation"
-    )
-    
-    val cardElevation by animateDpAsState(
-        targetValue = if (expanded) 4.dp else 1.dp,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
-        label = "elevation"
-    )
     
     Card(
         modifier = Modifier
@@ -250,11 +236,15 @@ fun PropertySection(
                     dampingRatio = Spring.DampingRatioMediumBouncy,
                     stiffness = Spring.StiffnessMedium
                 )
-            ),
+            )
+            .graphicsLayer {
+                // Use graphicsLayer for better performance
+                shadowElevation = if (expanded) 4.dp.toPx() else 1.dp.toPx()
+            },
         colors = CardDefaults.cardColors(
             //containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = cardElevation)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Surface(
@@ -290,7 +280,7 @@ fun PropertySection(
                         imageVector = Icons.Default.ExpandMore,
                         contentDescription = if (expanded) "Collapse" else "Expand",
                         modifier = Modifier.graphicsLayer {
-                            rotationZ = rotationAngle
+                            rotationZ = if (expanded) 180f else 0f
                         },
                         tint = MaterialTheme.colorScheme.primary
                     )

@@ -11,6 +11,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
 import xyz.isekhon.drawabletuner.data.model.DrawablePropertiesInRoom
@@ -26,7 +27,11 @@ fun DrawablePreview(
         contentAlignment = Alignment.Center
     ) {
         // Checkerboard background - fills entire preview area
-        Canvas(modifier = Modifier.fillMaxSize()) {
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer() // Force layer for better performance
+        ) {
             drawCheckerboard()
         }
         
@@ -36,7 +41,9 @@ fun DrawablePreview(
             val height = properties.height.dp
             
             Canvas(
-                modifier = Modifier.size(width, height)
+                modifier = Modifier
+                    .size(width, height)
+                    .graphicsLayer() // Force layer for better performance
             ) {
                 val canvas = drawContext.canvas.nativeCanvas
                 // Convert dp to pixels for drawable bounds

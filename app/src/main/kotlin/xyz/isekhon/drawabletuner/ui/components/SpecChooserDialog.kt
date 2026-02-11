@@ -56,7 +56,10 @@ fun SpecChooserDialog(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(specs) { spec ->
+                        items(
+                            items = specs,
+                            key = { it.name }
+                        ) { spec ->
                             val drawable = remember(spec) {
                                 DrawableBuilder(context.resources.displayMetrics.density)
                                     .batch(PropertiesExchange.fromRoom(spec.properties))

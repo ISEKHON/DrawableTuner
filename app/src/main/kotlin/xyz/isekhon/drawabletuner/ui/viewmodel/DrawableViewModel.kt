@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import xyz.isekhon.drawabletuner.data.repository.DrawableSpecRepository
 import xyz.isekhon.drawabletuner.data.model.DrawablePropertiesFactory
@@ -36,16 +38,24 @@ class DrawableViewModel(application: Application) : AndroidViewModel(application
     private val _savedSpecs = MutableStateFlow<List<DrawableSpec>>(emptyList())
     val savedSpecs: StateFlow<List<DrawableSpec>> = _savedSpecs.asStateFlow()
     
+    private var updateJob: Job? = null
+    
     init {
         updateDrawable()
         loadSavedSpecs()
     }
     
     private fun updateDrawable() {
-        val props = _properties.value
-        _drawable.value = DrawableBuilder()
-            .batch(PropertiesExchange.fromRoom(props))
-            .build()
+        // Cancel previous job and debounce updates for better performance
+        updateJob?.cancel()
+        updateJob = viewModelScope.launch {
+            delay(16) // ~1 frame delay to batch rapid updates
+            val props = _properties.value
+            val drawable = DrawableBuilder()
+                .batch(PropertiesExchange.fromRoom(props))
+                .build()
+            _drawable.value = drawable
+        }
     }
     
     @Suppress("UNCHECKED_CAST")
