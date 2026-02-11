@@ -303,65 +303,56 @@ fun PropertySection(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShapeSelector(
     currentShape: Int,
     onShapeChange: (Int) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("Shape", style = MaterialTheme.typography.labelLarge)
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            ShapeChip("Rectangle", GradientDrawable.RECTANGLE, currentShape, onShapeChange, Modifier.weight(1f))
-            ShapeChip("Oval", GradientDrawable.OVAL, currentShape, onShapeChange, Modifier.weight(1f))
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            ShapeChip("Line", GradientDrawable.LINE, currentShape, onShapeChange, Modifier.weight(1f))
-            ShapeChip("Ring", GradientDrawable.RING, currentShape, onShapeChange, Modifier.weight(1f))
-        }
-    }
-}
-
-@Composable
-fun ShapeChip(
-    label: String,
-    value: Int,
-    currentValue: Int,
-    onSelect: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val isSelected = currentValue == value
-    val scale by animateFloatAsState(
-        targetValue = if (isSelected) 1.05f else 1f,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
-        label = "scale"
+    var expanded by remember { mutableStateOf(false) }
+    
+    val shapes = listOf(
+        GradientDrawable.RECTANGLE to "Rectangle",
+        GradientDrawable.OVAL to "Oval",
+        GradientDrawable.LINE to "Line",
+        GradientDrawable.RING to "Ring"
     )
     
-    FilterChip(
-        selected = isSelected,
-        onClick = { onSelect(value) },
-        label = { 
-            Text(
-                label, 
-                modifier = Modifier.fillMaxWidth(),
-                style = MaterialTheme.typography.labelMedium
-            ) 
-        },
-        modifier = modifier.scale(scale),
-        border = if (isSelected) {
-            BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
-        } else {
-            FilterChipDefaults.filterChipBorder(
-                enabled = true,
-                selected = false
+    val selectedShape = shapes.find { it.first == currentShape }?.second ?: "Rectangle"
+    
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text("Shape", style = MaterialTheme.typography.labelLarge)
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = it }
+        ) {
+            OutlinedTextField(
+                value = selectedShape,
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor()
             )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                shapes.forEach { (value, label) ->
+                    DropdownMenuItem(
+                        text = { Text(label) },
+                        onClick = {
+                            onShapeChange(value)
+                            expanded = false
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                    )
+                }
+            }
         }
-    )
+    }
 }
 
 @Composable
