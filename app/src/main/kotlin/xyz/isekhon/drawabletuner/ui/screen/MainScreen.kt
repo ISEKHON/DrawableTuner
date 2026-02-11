@@ -52,13 +52,16 @@ fun MainScreen(
     // Collapse preview based on scroll position
     val isCollapsed by remember { derivedStateOf { scrollState.value > 50 } }
     
-    // Calculate preview height: 5% more than drawable height
+    // Calculate preview height: maintain shape size when collapsed
     val calculatedHeight = remember(properties.height, isCollapsed) {
+        // Always maintain at least the drawable height
+        val shapeHeight = properties.height.dp
         if (isCollapsed) {
-            120.dp
+            // When collapsed, use shape height + small padding, minimum 120dp
+            (shapeHeight * 1.05f).coerceAtLeast(120.dp)
         } else {
-            // Drawable height + 5%, with min/max bounds
-            val heightWithPadding = (properties.height.dp * 1.15f)
+            // When expanded, add 15% padding with bounds
+            val heightWithPadding = (shapeHeight * 1.15f)
             heightWithPadding.coerceIn(180.dp, 500.dp)
         }
     }
