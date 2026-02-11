@@ -52,8 +52,19 @@ fun MainScreen(
     // Collapse preview based on scroll position
     val isCollapsed by remember { derivedStateOf { scrollState.value > 50 } }
     
+    // Calculate preview height: 5% more than drawable height
+    val calculatedHeight = remember(properties.height, isCollapsed) {
+        if (isCollapsed) {
+            120.dp
+        } else {
+            // Drawable height + 5%, with min/max bounds
+            val heightWithPadding = (properties.height.dp * 1.15f)
+            heightWithPadding.coerceIn(180.dp, 500.dp)
+        }
+    }
+    
     val previewHeight by animateDpAsState(
-        targetValue = if (isCollapsed) 120.dp else 280.dp,
+        targetValue = calculatedHeight,
         animationSpec = tween(durationMillis = 300),
         label = "previewHeight"
     )
