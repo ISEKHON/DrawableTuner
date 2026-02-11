@@ -13,7 +13,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
@@ -90,7 +91,7 @@ fun MainScreen(
             TopAppBar(
                 title = {
                     Column {
-                        Text("Gradient Drawable Tuner")
+                        Text(stringResource(R.string.app_name))
                         if (currentSpec.name.isNotEmpty()) {
                             Text(
                                 text = if (isEdited) "${currentSpec.name} •" else currentSpec.name,
@@ -103,7 +104,7 @@ fun MainScreen(
                 actions = {
                     IconButton(onClick = { onNavigateToCodeView(properties) }) {
                         Icon(
-                            imageVector = Icons.Default.Menu,
+                            imageVector = Icons.Default.Code,
                             contentDescription = "View Code"
                         )
                     }
@@ -116,23 +117,53 @@ fun MainScreen(
                             onDismissRequest = { showMoreMenu = false }
                         ) {
                             DropdownMenuItem(
-                                text = { Text("New Spec") },
+                                text = { 
+                                    Text(
+                                        "New Spec",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    ) 
+                                },
                                 onClick = {
                                     viewModel.createNewSpec()
                                     showMoreMenu = false
                                 },
-                                leadingIcon = { Icon(Icons.Default.Add, null) }
+                                leadingIcon = { 
+                                    Icon(
+                                        Icons.Default.Add,
+                                        null,
+                                        tint = MaterialTheme.colorScheme.primary
+                                    ) 
+                                },
+                                modifier = Modifier.padding(vertical = 4.dp)
                             )
+                            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                             DropdownMenuItem(
-                                text = { Text("Load Spec") },
+                                text = { 
+                                    Text(
+                                        "Load Spec",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    ) 
+                                },
                                 onClick = {
                                     showSpecChooser = true
                                     showMoreMenu = false
                                 },
-                                leadingIcon = { Icon(Icons.Default.Menu, null) }
+                                leadingIcon = { 
+                                    Icon(
+                                        Icons.Default.FolderOpen,
+                                        null,
+                                        tint = MaterialTheme.colorScheme.primary
+                                    ) 
+                                },
+                                modifier = Modifier.padding(vertical = 4.dp)
                             )
                             DropdownMenuItem(
-                                text = { Text(if (currentSpec.id == 0) "Save Spec As..." else "Save Spec") },
+                                text = { 
+                                    Text(
+                                        if (currentSpec.id == 0) "Save Spec As..." else "Save Spec",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    ) 
+                                },
                                 onClick = {
                                     if (currentSpec.id == 0) {
                                         showSaveDialog = true
@@ -141,7 +172,14 @@ fun MainScreen(
                                     }
                                     showMoreMenu = false
                                 },
-                                leadingIcon = { Icon(Icons.Default.Save, null) }
+                                leadingIcon = { 
+                                    Icon(
+                                        Icons.Default.Save,
+                                        null,
+                                        tint = MaterialTheme.colorScheme.primary
+                                    ) 
+                                },
+                                modifier = Modifier.padding(vertical = 4.dp)
                             )
                         }
                     }
