@@ -1,5 +1,6 @@
 package xyz.isekhon.drawabletuner.ui.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -16,6 +17,9 @@ fun XmlCodeViewScreen(
     properties: DrawablePropertiesInRoom,
     onNavigateBack: () -> Unit
 ) {
+    // Handle predictive back gesture
+    BackHandler(onBack = onNavigateBack)
+    
     val xmlCode = remember(properties) {
         ShapeXmlGenerator.shapeXmlString(properties).replace("0x", "#")
     }

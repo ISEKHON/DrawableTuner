@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -66,7 +69,31 @@ fun GradientDrawableTunerApp() {
         
         composable(
             route = "codeView/{properties}",
-            arguments = listOf(navArgument("properties") { type = NavType.StringType })
+            arguments = listOf(navArgument("properties") { type = NavType.StringType }),
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = tween(300)
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { fullWidth -> -fullWidth / 4 },
+                    animationSpec = tween(300)
+                )
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { fullWidth -> -fullWidth / 4 },
+                    animationSpec = tween(300)
+                )
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = tween(300)
+                )
+            }
         ) { backStackEntry ->
             val encoded = backStackEntry.arguments?.getString("properties") ?: ""
             val json = URLDecoder.decode(encoded, "UTF-8")
