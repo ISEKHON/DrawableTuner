@@ -1,13 +1,5 @@
 package xyz.isekhon.drawabletuner.ui.screen
 
-import android.graphics.drawable.Drawable
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -19,19 +11,11 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.lifecycle.viewmodel.compose.viewModel
 import xyz.isekhon.drawabletuner.R
 import xyz.isekhon.drawabletuner.data.model.DrawablePropertiesInRoom
@@ -65,31 +49,13 @@ fun MainScreen(
         viewModel.applyDynamicColors(colorScheme)
     }
     
-    // Use derivedStateOf to minimize recompositions
+    // Collapse preview based on scroll position
     val isCollapsed by remember { derivedStateOf { scrollState.value > 50 } }
     
     val previewHeight by animateDpAsState(
         targetValue = if (isCollapsed) 120.dp else 280.dp,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMedium
-        ),
+        animationSpec = tween(durationMillis = 300),
         label = "previewHeight"
-    )
-    
-    val previewWidth by animateDpAsState(
-        targetValue = if (isCollapsed) 120.dp else 0.dp,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMedium
-        ),
-        label = "previewWidth"
-    )
-    
-    val previewElevation by animateDpAsState(
-        targetValue = if (isCollapsed) 8.dp else 2.dp,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
-        label = "previewElevation"
     )
     
     Scaffold(
@@ -196,46 +162,18 @@ fun MainScreen(
             )
         }
     ) { paddingValues ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .verticalScroll(scrollState)
         ) {
-            // Controls - Scrollable
-            PropertyControls(
-                properties = properties,
-                onPropertyChange = { name, value ->
-                    viewModel.updateProperty(name, value)
-                },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
-                    .padding(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = if (isCollapsed) 12.dp else previewHeight + 12.dp,
-                        bottom = 12.dp
-                    )
-            )
-            
-            // Collapsible Preview - Floats on top
+            // Preview area that collapses vertically
             Surface(
                 modifier = Modifier
-                    .then(
-                        if (isCollapsed) {
-                            Modifier
-                                .size(previewWidth, previewHeight)
-                                .padding(start = 16.dp, top = 8.dp)
-                        } else {
-                            Modifier
-                                .fillMaxWidth()
-                                .height(previewHeight)
-                        }
-                    )
-                    .zIndex(1f),
-                tonalElevation = previewElevation,
-                shadowElevation = previewElevation,
-                shape = if (isCollapsed) MaterialTheme.shapes.medium else MaterialTheme.shapes.extraSmall
+                    .fillMaxWidth()
+                    .height(previewHeight),
+                tonalElevation = 2.dp
             ) {
                 DrawablePreview(
                     drawable = drawable,
@@ -243,6 +181,17 @@ fun MainScreen(
                     modifier = Modifier.fillMaxSize()
                 )
             }
+            
+            // Property controls
+            PropertyControls(
+                properties = properties,
+                onPropertyChange = { name, value ->
+                    viewModel.updateProperty(name, value)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+            )
         }
     }
     
