@@ -40,10 +40,6 @@ android {
 
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
-    
-    implementation(platform(libs.sora.bom))
-    implementation(libs.editor)
-    implementation(libs.language.textmate)
 
     // Kotlin reflection
     implementation(libs.kotlin.reflect)

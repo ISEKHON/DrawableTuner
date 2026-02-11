@@ -38,7 +38,7 @@ A modern Android app for creating and designing gradient drawables with a beauti
 
 ### 💾 Export & Code
 - **XML Export**: Generate ready-to-use XML drawable code
-- **Code Viewer**: Syntax-highlighted code display powered by Sora Editor
+- **Code Viewer**: Custom syntax-highlighted code display with dark/light theme support
 - **Copy & Save**: Easily copy or save your drawable specifications
 
 ## Technology Stack
@@ -46,8 +46,8 @@ A modern Android app for creating and designing gradient drawables with a beauti
 - **Language**: Kotlin 2.3.0
 - **UI Framework**: Jetpack Compose with Material 3
 - **Architecture**: MVVM with ViewModel and Repository pattern
-- **Persistence**: Room Database and DataStore
-- **Code Editor**: Sora Editor (TextMate-based syntax highlighting)
+- **Persistence**: JSON file storage with Kotlin Serialization
+- **Code Highlighting**: Custom XML syntax highlighter
 - **Build System**: Gradle with Kotlin DSL
 - **Min SDK**: 26 (Android 8.0)
 - **Target SDK**: 35 (Android 15)
@@ -58,9 +58,9 @@ A modern Android app for creating and designing gradient drawables with a beauti
 - Jetpack Compose BOM 2026.01.01
 - Material 3 Compose
 - Material Icons Extended
-- Room Database
-- DataStore Preferences
-- Sora Editor 0.23.4
+- Kotlin Serialization
+- Kotlin Reflection
+- dom4j (XML processing)
 - Core Library Desugaring
 ```
 
@@ -108,5 +108,5 @@ This project is open source and available under the [MIT License](LICENSE).
 ## Acknowledgments
 
 - Built with [Jetpack Compose](https://developer.android.com/jetpack/compose)
-- Code editing powered by [Sora Editor](https://github.com/Rosemoe/sora-editor)
+- XML processing with [dom4j](https://dom4j.github.io/)
 - Inspired by the need for a modern drawable design tool

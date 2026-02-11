@@ -66,17 +66,6 @@
 -keepnames class androidx.navigation.** { *; }
 
 # ===========================
-# Sora Editor
-# ===========================
--keep class io.github.rosemoe.sora.** { *; }
--keep interface io.github.rosemoe.sora.** { *; }
--keepclassmembers class io.github.rosemoe.sora.** { *; }
-
-# TextMate language support
--keep class org.eclipse.tm4e.** { *; }
--keep interface org.eclipse.tm4e.** { *; }
-
-# ===========================
 # XML Processing (dom4j)
 # ===========================
 -keep class org.dom4j.** { *; }
