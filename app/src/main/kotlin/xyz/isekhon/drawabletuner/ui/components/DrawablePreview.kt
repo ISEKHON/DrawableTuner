@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +23,9 @@ fun DrawablePreview(
     properties: DrawablePropertiesInRoom,
     modifier: Modifier = Modifier
 ) {
+    val lightColor = MaterialTheme.colorScheme.surfaceContainerHighest
+    val darkColor = MaterialTheme.colorScheme.surfaceContainerHigh
+    
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -32,7 +36,7 @@ fun DrawablePreview(
                 .fillMaxSize()
                 .graphicsLayer() // Force layer for better performance
         ) {
-            drawCheckerboard()
+            drawCheckerboard(lightColor, darkColor)
         }
         
         // Drawable preview - centered
@@ -56,10 +60,8 @@ fun DrawablePreview(
     }
 }
 
-private fun DrawScope.drawCheckerboard() {
+private fun DrawScope.drawCheckerboard(lightColor: Color, darkColor: Color) {
     val checkSize = 16.dp.toPx()
-    val lightColor = Color.White
-    val darkColor = Color(0xFFE0E0E0)
     
     var y = 0f
     while (y < size.height) {

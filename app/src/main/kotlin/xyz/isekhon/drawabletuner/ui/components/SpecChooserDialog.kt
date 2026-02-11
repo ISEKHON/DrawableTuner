@@ -88,8 +88,10 @@ fun SpecChooserDialog(
                                     ) {
                                         Box {
                                             // Checkerboard background
+                                            val lightColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                                            val darkColor = MaterialTheme.colorScheme.surfaceContainerHigh
                                             Canvas(modifier = Modifier.fillMaxSize()) {
-                                                drawMiniCheckerboard()
+                                                drawMiniCheckerboard(lightColor, darkColor)
                                             }
                                             
                                             // Drawable preview
@@ -130,10 +132,8 @@ fun SpecChooserDialog(
     }
 }
 
-private fun DrawScope.drawMiniCheckerboard() {
+private fun DrawScope.drawMiniCheckerboard(lightColor: Color, darkColor: Color) {
     val checkSize = 8.dp.toPx()
-    val lightColor = Color.White
-    val darkColor = Color(0xFFE0E0E0)
     
     var y = 0f
     while (y < size.height) {
