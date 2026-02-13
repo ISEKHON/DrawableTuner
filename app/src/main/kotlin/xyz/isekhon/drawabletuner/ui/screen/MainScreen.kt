@@ -1,5 +1,7 @@
 package xyz.isekhon.drawabletuner.ui.screen
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -8,10 +10,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.animation.core.animateDpAsState
@@ -31,6 +35,7 @@ fun MainScreen(
     viewModel: DrawableViewModel = viewModel(),
     onNavigateToCodeView: (DrawablePropertiesInRoom) -> Unit
 ) {
+    val context = LocalContext.current
     val properties by viewModel.properties.collectAsState()
     val drawable by viewModel.drawable.collectAsState()
     val currentSpec by viewModel.currentSpec.collectAsState()
@@ -161,6 +166,28 @@ fun MainScreen(
                                 leadingIcon = { 
                                     Icon(
                                         Icons.Default.Save,
+                                        null,
+                                        tint = MaterialTheme.colorScheme.primary
+                                    ) 
+                                },
+                                modifier = Modifier.padding(vertical = 4.dp)
+                            )
+                            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                            DropdownMenuItem(
+                                text = { 
+                                    Text(
+                                        "View on GitHub",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    ) 
+                                },
+                                onClick = {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/ISEKHON/DrawableTuner"))
+                                    context.startActivity(intent)
+                                    showMoreMenu = false
+                                },
+                                leadingIcon = { 
+                                    Icon(
+                                        Icons.Default.OpenInBrowser,
                                         null,
                                         tint = MaterialTheme.colorScheme.primary
                                     ) 
