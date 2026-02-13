@@ -1,4 +1,10 @@
 # DrawableTuner
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.3.0-blue.svg)](https://kotlinlang.org)
+[![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-1.7.6-4285F4?logo=jetpackcompose)](https://developer.android.com/jetpack/compose)
+[![Total downloads](https://img.shields.io/github/downloads/ISEKHON/DrawableTuner/total)](https://github.com/ISEKHON/DrawableTuner/releases)
+[![Latest release](https://img.shields.io/github/v/release/ISEKHON/DrawableTuner)](https://github.com/ISEKHON/DrawableTuner/releases)
+[![GitHub last commit](https://img.shields.io/github/last-commit/ISEKHON/DrawableTuner)](https://github.com/ISEKHON/DrawableTuner/commits/)
+[![Repository Size](https://img.shields.io/github/repo-size/ISEKHON/DrawableTuner)](https://github.com/ISEKHON/DrawableTuner)
 
 A modern Android app for creating and designing gradient drawables with a beautiful Material 3 UI. Create complex shapes, gradients, and export them as XML code ready to use in your Android projects.
 
