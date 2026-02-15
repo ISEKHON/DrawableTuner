@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="preview/icon.png" width="100" alt="App Icon" />
+</p>
+
 # DrawableTuner
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.3.0-blue.svg)](https://kotlinlang.org)
 [![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-1.7.6-4285F4?logo=jetpackcompose)](https://developer.android.com/jetpack/compose)
